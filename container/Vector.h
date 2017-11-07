@@ -94,7 +94,7 @@ namespace NoctisGames
             {
                 for (size_t i = inIndex; i < _size; ++i)
                 {
-                    _buffer[i] = std::move(_buffer[i + 1]);
+                    std::swap(_buffer[i], _buffer[i + 1]);
                 }
             }
             
