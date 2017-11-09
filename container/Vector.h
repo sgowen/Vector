@@ -9,6 +9,7 @@
 #ifndef NoctisGames_Vector_h
 #define NoctisGames_Vector_h
 
+#include <stdlib.h>
 #include <memory>
 #include <assert.h>
 
