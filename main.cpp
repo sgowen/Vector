@@ -6,15 +6,11 @@
 //  Copyright © 2017 Noctis Games. All rights reserved.
 //
 
-#include <container/VectorTest.h>
+#include <vector/VectorTest.h>
 
 int main(int argc, const char * argv[])
 {
     using namespace NoctisGames;
     
-    VectorTest::onBegin();
-    VectorTest::testVectorInt();
-    VectorTest::testVectorString();
-    VectorTest::testVectorCustom();
-    VectorTest::onEnd();
+    VectorTest::test();
 }

@@ -9,7 +9,8 @@
 #ifndef NoctisGames_VectorTest_h
 #define NoctisGames_VectorTest_h
 
-#include "ContainerUtil.h"
+#include <vector/Vector.h>
+#include <vector/VectorUtil.h>
 
 #include <iostream>
 #include <time.h>
@@ -217,7 +218,7 @@ namespace NoctisGames
     public:
         static void onBegin()
         {
-            srand(static_cast<unsigned int>(time(nullptr)));
+            srand(static_cast<unsigned int>(time(NULL)));
             
             _gVectorTestStartTime = clock();
         }
@@ -248,6 +249,7 @@ namespace NoctisGames
             erase(arr);
             insert(arr, 3000);
             add(arr, 5000);
+            
             clear(arr);
         }
         
@@ -256,8 +258,17 @@ namespace NoctisGames
             NoctisGames::Vector<MyCustomClass*> arr;
             generate(arr, 4);
             add(arr, 4);
-            ContainerUtil::cleanUpVectorOfPointers(arr);
+            VectorUtil::cleanUpVectorOfPointers(arr);
             clear(arr);
+        }
+        
+        static void test()
+        {
+            onBegin();
+            testVectorInt();
+            testVectorString();
+            testVectorCustom();
+            onEnd();
         }
         
     private:
