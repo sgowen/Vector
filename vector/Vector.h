@@ -9,6 +9,8 @@
 #ifndef NoctisGames_Vector_h
 #define NoctisGames_Vector_h
 
+#include <vector/Extension.h>
+
 #include <stdlib.h>
 #include <memory>
 #include <assert.h>
@@ -24,16 +26,51 @@ namespace NoctisGames
             // Empty
         }
         
-        Vector(const Vector& inArray) : _size(inArray._size), _capacity(inArray._capacity), _buffer(NULL)
+        Vector(const Vector& inVector) : _size(inVector._size), _capacity(inVector._capacity), _buffer(NULL)
         {
             if (_capacity > 0)
             {
                 _buffer = allocate(_capacity);
                 for (size_t i = 0; i < _size; ++i)
                 {
-                    construct(_buffer + i, inArray._buffer[i]);
+                    construct(_buffer + i, inVector._buffer[i]);
                 }
             }
+        }
+        
+        Vector(Vector& inVector) : _size(inVector._size), _capacity(inVector._capacity), _buffer(NULL)
+        {
+            if (_capacity > 0)
+            {
+                _buffer = allocate(_capacity);
+                for (size_t i = 0; i < _size; ++i)
+                {
+                    construct(_buffer + i, inVector._buffer[i]);
+                }
+            }
+        }
+        
+        Vector& operator=(Vector& inVector)
+        {
+            if (this != &inVector)
+            {
+                clear();
+                deallocate(_buffer);
+                
+                _size = inVector._size;
+                _capacity = inVector._capacity;
+                
+                if (_capacity > 0)
+                {
+                    _buffer = allocate(_capacity);
+                    for (size_t i = 0; i < _size; ++i)
+                    {
+                        construct(_buffer + i, inVector._buffer[i]);
+                    }
+                }
+            }
+            
+            return *this;
         }
         
         ~Vector()
@@ -53,6 +90,19 @@ namespace NoctisGames
             }
             
             return false;
+        }
+        
+        int indexOf(const T& inValue)
+        {
+            for (size_t i = 0; i < _size; ++i)
+            {
+                if (_buffer[i] == inValue)
+                {
+                    return static_cast<int>(i);
+                }
+            }
+            
+            return -1;
         }
         
         void push_back(const T& inValue)
@@ -127,7 +177,7 @@ namespace NoctisGames
             size_t newCapacity = inCapacity > 0 ? inCapacity : _capacity > 0 ? _capacity * 2 : 1;
             if (newCapacity > _capacity)
             {
-                _buffer = static_cast<T*>(realloc(_buffer, newCapacity * sizeof(T)));
+                _buffer = REALLOC(_buffer, T, newCapacity);
                 _capacity = newCapacity;
             }
         }
@@ -142,6 +192,29 @@ namespace NoctisGames
             return &_buffer[_size];
         }
         
+        friend bool operator==(Vector<T>& lhs, Vector<T>& rhs)
+        {
+            if (lhs.size() != rhs.size())
+            {
+                return false;
+            }
+            
+            for (int i = 0, n = static_cast<int>(lhs.size()); i < n; ++i)
+            {
+                if (lhs[i] != rhs[i])
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        friend bool operator!=(Vector<T>& lhs, Vector<T>& rhs)
+        {
+            return !(lhs == rhs);
+        }
+        
     private:
         size_t _size;
         size_t _capacity;
@@ -151,15 +224,16 @@ namespace NoctisGames
         {
             assert(n > 0);
             
-            void* ptr = malloc(n * sizeof(T));
+            T* ptr = MALLOC(T, n);
+            
             assert(ptr);
             
-            return static_cast<T*>(ptr);
+            return ptr;
         }
         
         void deallocate(T* buffer)
         {
-            free(buffer);
+            FREE(buffer);
         }
         
         void construct(T* buffer, const T& val)

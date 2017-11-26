@@ -9,6 +9,7 @@
 #ifndef NoctisGames_VectorUtil_h
 #define NoctisGames_VectorUtil_h
 
+#include <vector/Extension.h>
 #include <vector/Vector.h>
 
 namespace NoctisGames
@@ -22,7 +23,7 @@ namespace NoctisGames
             for (size_t i = 0; i < items.size(); )
             {
                 T* item = items[i];
-                delete item;
+                DESTROY(T, item);
                 
                 items.erase(i);
             }

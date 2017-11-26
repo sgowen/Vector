@@ -9,6 +9,7 @@
 #ifndef NoctisGames_VectorTest_h
 #define NoctisGames_VectorTest_h
 
+#include <vector/Extension.h>
 #include <vector/Vector.h>
 #include <vector/VectorUtil.h>
 
@@ -39,6 +40,16 @@ namespace NoctisGames
         {
             std::cout << "We are being destructed!: " << _x << _y << _z << std::endl;
         }
+        
+        friend bool operator==(MyCustomClass& lhs, MyCustomClass& rhs)
+        {
+            return lhs._x == rhs._x && lhs._y == rhs._y && lhs._z == rhs._z;
+        }
+        
+        friend bool operator!=(MyCustomClass& lhs, MyCustomClass& rhs)
+        {
+            return !(lhs == rhs);
+        }
     };
     
     void print(NoctisGames::Vector<int>& array, const char* _functionName)
@@ -61,12 +72,12 @@ namespace NoctisGames
         std::cout << std::endl;
     }
     
-    void print(NoctisGames::Vector<MyCustomClass*>& array, const char* _functionName)
+    void print(NoctisGames::Vector<MyCustomClass>& array, const char* _functionName)
     {
         std::cout << _functionName << std::endl;
-        for (MyCustomClass** it = array.begin(); it != array.end(); it++)
+        for (MyCustomClass* it = array.begin(); it != array.end(); it++)
         {
-            std::cout << (*it)->_x << " " << (*it)->_y << " " << (*it)->_z << "|";
+            std::cout << (*it)._x << " " << (*it)._y << " " << (*it)._z << "|";
         }
         std::cout << std::endl;
     }
@@ -135,11 +146,11 @@ namespace NoctisGames
         print(array, __FUNCTION__);
     }
     
-    void generate(NoctisGames::Vector<MyCustomClass*>& array, int size)
+    void generate(NoctisGames::Vector<MyCustomClass>& array, int size)
     {
         for (int i = 0; i < size; ++i)
         {
-            array.push_back(new MyCustomClass(rand() % 10, rand() % 10, rand() % 10));
+            array.push_back(MyCustomClass(rand() % 10, rand() % 10, rand() % 10));
         }
         print(array, __FUNCTION__);
     }
@@ -195,11 +206,11 @@ namespace NoctisGames
         print(array, __FUNCTION__);
     }
     
-    void add(NoctisGames::Vector<MyCustomClass*>& array, size_t size)
+    void add(NoctisGames::Vector<MyCustomClass>& array, size_t size)
     {
         for (size_t i = 0; i < size; ++i)
         {
-            array.push_back(new MyCustomClass(rand() % 10, rand() % 10, rand() % 10));
+            array.push_back(MyCustomClass(rand() % 10, rand() % 10, rand() % 10));
         }
         print(array, __FUNCTION__);
     }
@@ -255,11 +266,33 @@ namespace NoctisGames
         
         static void testVectorCustom()
         {
-            NoctisGames::Vector<MyCustomClass*> arr;
+            printf("testVectorCustom\n");
+            
+            NoctisGames::Vector<MyCustomClass> arr;
             generate(arr, 4);
             add(arr, 4);
-            VectorUtil::cleanUpVectorOfPointers(arr);
+            
             clear(arr);
+        }
+        
+        static void testOtherStuff()
+        {
+            printf("testOtherStuff\n");
+            
+            NoctisGames::Vector<MyCustomClass> arr;
+            NoctisGames::Vector<MyCustomClass> arr2;
+            NoctisGames::Vector<MyCustomClass> arr3;
+            NoctisGames::Vector<MyCustomClass> arr4;
+            generate(arr, 4);
+            generate(arr2, 5);
+            generate(arr3, 6);
+            generate(arr4, 6);
+            
+            arr = arr3;
+            
+            assert(arr == arr3);
+            assert(arr != arr2);
+            assert(arr3 != arr4);
         }
         
         static void test()
@@ -268,6 +301,7 @@ namespace NoctisGames
             testVectorInt();
             testVectorString();
             testVectorCustom();
+            testOtherStuff();
             onEnd();
         }
         
