@@ -7,10 +7,13 @@
 //
 
 #include <vector/VectorTest.h>
+#include <vector/Extension.h>
 
 int main(int argc, const char * argv[])
 {
     using namespace NoctisGames;
+    
+    NGAllocator::setInstance(DefaultNGAllocator::getInstance());
     
     VectorTest::test();
 }
