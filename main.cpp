@@ -13,7 +13,7 @@ int main(int argc, const char * argv[])
 {
     using namespace NoctisGames;
     
-    NGAllocator::setInstance(DefaultNGAllocator::getInstance());
+    NGExtension::setInstance(DefaultNGExtension::getInstance());
     
     VectorTest::test();
 }

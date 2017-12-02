@@ -13,63 +13,74 @@
 
 namespace NoctisGames
 {
-    NGAllocator* NGAllocator::_ngAllocator = NULL;
+    NGExtension* NGExtension::_instance = NULL;
     
-    void NGAllocator::setInstance(NGAllocator* inValue)
+    void NGExtension::setInstance(NGExtension* inValue)
     {
-        assert(!_ngAllocator);
+        assert(!_instance);
         
-        _ngAllocator = inValue;
+        _instance = inValue;
     }
     
-    NGAllocator* NGAllocator::getInstance()
+    NGExtension* NGExtension::getInstance()
     {
-        assert(_ngAllocator);
+        assert(_instance);
         
-        return _ngAllocator;
+        return _instance;
     }
     
-    NGAllocator::NGAllocator()
+    NGExtension::NGExtension()
     {
         // Empty
     }
     
-    NGAllocator::~NGAllocator()
+    NGExtension::~NGExtension()
     {
         // Empty
     }
     
-    DefaultNGAllocator* DefaultNGAllocator::getInstance()
+    DefaultNGExtension* DefaultNGExtension::getInstance()
     {
-        static DefaultNGAllocator ret;
+        static DefaultNGExtension ret;
         return &ret;
     }
     
-    DefaultNGAllocator::DefaultNGAllocator() : NGAllocator()
+    DefaultNGExtension::DefaultNGExtension() : NGExtension()
     {
         // Empty
     }
     
-    DefaultNGAllocator::~DefaultNGAllocator()
+    DefaultNGExtension::~DefaultNGExtension()
     {
         // Empty
     }
     
-    void* DefaultNGAllocator::ngAlloc(size_t size, const char* file, int line)
+    void* DefaultNGExtension::ngAlloc(size_t size, const char* file, int line)
     {
         printf("ng size: %lu, file: %s, line: %d \n", size, file, line);
         
         return malloc(size);
     }
     
-    void* DefaultNGAllocator::ngRealloc(void* ptr, size_t size, const char* file, int line)
+    void* DefaultNGExtension::ngCalloc(size_t num, size_t size, const char* file, int line)
+    {
+        void* ptr = ngAlloc(num * size, file, line);
+        if (ptr)
+        {
+            memset(ptr, 0, num * size);
+        }
+        
+        return ptr;
+    }
+    
+    void* DefaultNGExtension::ngRealloc(void* ptr, size_t size, const char* file, int line)
     {
         printf("ng size: %lu, file: %s, line: %d \n", size, file, line);
         
         return realloc(ptr, size);
     }
     
-    void DefaultNGAllocator::ngFree(void* mem)
+    void DefaultNGExtension::ngFree(void* mem)
     {
         free(mem);
     }
