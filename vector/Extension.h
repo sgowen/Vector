@@ -16,7 +16,7 @@
 /* All allocation uses these. */
 #define MALLOC(TYPE,COUNT) ((TYPE*)NG_EXTENSION->ngAlloc(sizeof(TYPE) * (COUNT), __FILE__, __LINE__))
 #define CALLOC(TYPE,COUNT) ((TYPE*)NG_EXTENSION->ngCalloc(COUNT, sizeof(TYPE), __FILE__, __LINE__))
-#define NEW(TYPE) ((TYPE*)NG_EXTENSION->ngAlloc(sizeof(TYPE), __FILE__, __LINE__))
+#define NEW(TYPE) CALLOC(TYPE,1)
 #define REALLOC(PTR,TYPE,COUNT) ((TYPE*)NG_EXTENSION->ngRealloc(PTR, sizeof(TYPE) * (COUNT), __FILE__, __LINE__))
 
 /* Frees memory. Can be used on const types. */
